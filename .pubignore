@@ -1,0 +1,12 @@
+# OS Related Files
+
+.DS_Store
+.vscode/
+
+# Test Related Files
+
+coverage/
+
+# Build Related Files
+
+build/
