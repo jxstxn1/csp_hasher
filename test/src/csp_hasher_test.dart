@@ -99,4 +99,31 @@ void main() {
       });
     });
   });
+  group('getLineNumber', () {
+    test('returns the correct line number', () {
+      const htmlFile =
+          'line 1\nline 2\n<script>console.log("hello");</script>\nline 4\n';
+      const script = '<script>console.log("hello");</script>';
+      expect(getLineNumber(htmlFile, script), equals(3));
+    });
+
+    test('returns 1 for an empty file', () {
+      const htmlFile = '';
+      const script = '<script>console.log("hello");</script>';
+      expect(getLineNumber(htmlFile, script), equals(1));
+    });
+
+    test('returns 1 for a file without the script', () {
+      const htmlFile = 'line 1\nline 2\nline 3\nline 4\n';
+      const script = '<script>console.log("hello");</script>';
+      expect(getLineNumber(htmlFile, script), equals(1));
+    });
+
+    test('handles \\r\\n line endings correctly', () {
+      const htmlFile =
+          'line 1\r\nline 2\r\n<script>console.log("hello");</script>\r\nline 4\r\n';
+      const script = '<script>console.log("hello");</script>';
+      expect(getLineNumber(htmlFile, script), equals(3));
+    });
+  });
 }
