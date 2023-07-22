@@ -1,8 +1,14 @@
 # CSP Hasher
 
-This is a simple tool to generate CSP hashes for inline scripts and styles.
+This is a simple tool to generate hashes for inline scripts or styles to allow the scripts in your [CSP(Content Security Policy)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP).
 
 You can hash inline scripts and styles with `sha256`, `sha384` and `sha512`.
+
+## Installing
+
+```bash
+dart pub add content_length_validator
+```
 
 ## Usage
 
