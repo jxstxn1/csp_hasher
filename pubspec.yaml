@@ -4,6 +4,12 @@ version: 1.0.0
 homepage: https://jxstxn.dev
 repository: https://github.com/jxstxn1/csp_hasher
 issue_tracker: https://github.com/jxstxn1/csp_hasher/issues
+topics:
+  - dart
+  - csp
+  - hash
+  - security
+  - html
 
 environment:
   sdk: ^3.0.5
