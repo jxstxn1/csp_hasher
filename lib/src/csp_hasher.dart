@@ -9,7 +9,8 @@ import 'package:html/parser.dart' show parse;
 /// Hashes all the scripts in the html file
 /// Returns a list of [CspHash]
 /// If there are no scripts, it returns an empty list
-/// `hashType` is the type of hash to use (sha256, sha384, sha512)
+/// `hashType` is the type of hash to use (sha256, sha384, sha512), defaults to sha256
+/// `hashMode` is the mode to use (script, style), defaults to script
 /// `htmlFile` is the html file to hash
 /// Ignores scripts with a nonce attribute
 ///
@@ -30,20 +31,21 @@ import 'package:html/parser.dart' show parse;
 List<CspHash> hashScripts({
   required File htmlFile,
   Hash hashType = sha256,
+  HashMode hashMode = HashMode.script,
 }) {
   assert(hashType == sha256 || hashType == sha384 || hashType == sha512);
   // getting all the scripts from the html file
-  final scripts = getScripts(htmlFile);
+  final scripts = getScripts(htmlFile, hashMode);
   if (scripts.isEmpty) {
     return [];
   }
 
   // hashing the scripts
-  return hasher(scripts, hashType);
+  return hasher(scripts, hashType, hashMode);
 }
 
 /// Get all the scripts from the html file
-Map<int, String> getScripts(File htmlFile) {
+Map<int, String> getScripts(File htmlFile, HashMode hashMode) {
   // reading html file as string
   final htmlString = htmlFile.readAsStringSync();
 
@@ -51,8 +53,10 @@ Map<int, String> getScripts(File htmlFile) {
   final Document htmlDocumentFile = parse(htmlString);
   final hashScripts = <int, String>{};
   final List<Element> scripts = [
-    ...htmlDocumentFile.getElementsByTagName('script'),
-    ...htmlDocumentFile.getElementsByTagName('style')
+    if (hashMode == HashMode.script)
+      ...htmlDocumentFile.getElementsByTagName('script'),
+    if (hashMode == HashMode.style)
+      ...htmlDocumentFile.getElementsByTagName('style')
   ];
   for (final script in scripts) {
     if (!script.attributes.containsKey('nonce')) {
@@ -72,6 +76,7 @@ Map<int, String> getScripts(File htmlFile) {
 List<CspHash> hasher(
   Map<int, String> scripts,
   Hash hashType,
+  HashMode hashMode,
 ) {
   final hashScripts = <CspHash>[];
   scripts.forEach((lineNumber, script) {
@@ -88,11 +93,13 @@ List<CspHash> hasher(
           lineNumber: lineNumber,
           hashType: hashType,
           hash: base64String,
+          hashMode: hashMode,
         ),
       );
     }
   });
-  return hashScripts;
+  // sort by line number
+  return hashScripts..sort((a, b) => a.lineNumber.compareTo(b.lineNumber));
 }
 
 /// Returns the line number of the script in the html file

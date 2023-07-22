@@ -1,4 +1,5 @@
 import 'package:crypto/crypto.dart';
+import 'package:csp_hasher/src/csp_hash.dart';
 import 'package:csp_hasher/src/csp_hasher.dart';
 import 'package:test/test.dart';
 
@@ -6,18 +7,24 @@ import '../helper/load_html.dart';
 
 void main() {
   group('getScripts()', () {
-    test('Should find three scripts in sample.html', () async {
-      final scripts = getScripts(loadSampleHTMLFile);
+    test('Should find two scripts in sample.html', () async {
+      final scripts = getScripts(loadSampleHTMLFile, HashMode.script);
       expect(scripts.length, 2);
     });
 
-    test('Should find three scripts in sample.html', () async {
-      final scripts = getScripts(loadSampleWithNonceHTMLFile);
+    test('Should find one style in sample.html', () async {
+      final scripts = getScripts(loadSampleHTMLFile, HashMode.style);
+      expect(scripts.length, 1);
+    });
+
+    test('Should find one scripts in sample_with_nonce.html', () async {
+      final scripts = getScripts(loadSampleWithNonceHTMLFile, HashMode.script);
       expect(scripts.length, 1);
     });
 
     test('Should find no scripts in sample_with_no_scripts.html', () async {
-      final scripts = getScripts(loadSampleHTMLWithEmptyScriptsFile);
+      final scripts =
+          getScripts(loadSampleHTMLWithEmptyScriptsFile, HashMode.script);
       expect(scripts.length, 0);
     });
   });
@@ -38,26 +45,27 @@ void main() {
       );
       expect(hashedScripts, isEmpty);
     });
-    group('Sha256', () {
-      test('Should hash the scripts in the sample html', () {
+    group('HashMode.script', () {
+      test('Sha256 Should hash the scripts in the sample html', () {
         final hashedScripts = hashScripts(htmlFile: loadSampleHTMLFile);
         final hashedServiceWorkerScript = hashedScripts.first;
         expect(
           '$hashedServiceWorkerScript',
-          '''"'sha256-DYE2F9R1zqzhJwChIaBDWw4p1FtYuRhkYTCsJwEni1o='"''',
+          '''"'sha256-dAtxS5kDRr7Nf5bQWvw1H9Jirf+JuUdICHgO4NZRXsA='"''',
         );
-        expect(hashedServiceWorkerScript.lineNumber, 35);
+        expect(hashedServiceWorkerScript.lineNumber, 12);
+        expect(hashedServiceWorkerScript.hashMode, HashMode.script);
 
         final hashedEventScript = hashedScripts.last;
         expect(
           '$hashedEventScript',
-          '''"'sha256-7kkT0t17vF4Bgf54wBSjuZO3pORc3aibNdISkVdNrnk='"''',
+          '''"'sha256-QRmrLOV2cSexRDYBkk5SLrTscXMSEO218euptb/ZAww='"''',
         );
-        expect(hashedEventScript.lineNumber, 43);
+        expect(hashedEventScript.lineNumber, 28);
+        expect(hashedEventScript.hashMode, HashMode.script);
       });
-    });
-    group('Sha384', () {
-      test('Should hash the scripts in the sample html', () {
+
+      test('Sha384 Should hash the scripts in the sample html', () {
         final hashedScripts = hashScripts(
           htmlFile: loadSampleHTMLFile,
           hashType: sha384,
@@ -65,20 +73,21 @@ void main() {
         final hashedServiceWorkerScript = hashedScripts.first;
         expect(
           '$hashedServiceWorkerScript',
-          '''"'sha384-SXUxNfAG3vW81Xqzlv28ndONmqQezL+RnITpGhbuXcJPpx5JW2grzy8hGK3h8/JS'"''',
+          '''"'sha384-izWwDGNbuH+LKeeqF084wyNMeBNvlTTBPE4q2TgaIy1cQoBoI4X1Kh66o8RSsqEC'"''',
         );
-        expect(hashedServiceWorkerScript.lineNumber, 35);
+        expect(hashedServiceWorkerScript.lineNumber, 12);
+        expect(hashedServiceWorkerScript.hashMode, HashMode.script);
 
         final hashedEventScript = hashedScripts.last;
         expect(
           '$hashedEventScript',
-          '''"'sha384-LIj/+KEHaedkn1bv3oYh05IeZDmbgFA68WbaYYokwK2S7zqFMy8JimN1ciBngTJx'"''',
+          '''"'sha384-XTKJ87+hhNCgHn3XdrwxZj4xRAckHUwkzIPoWLiJ8ZfY0s2EnL+zc/dhvKawcJyB'"''',
         );
-        expect(hashedEventScript.lineNumber, 43);
+        expect(hashedEventScript.lineNumber, 28);
+        expect(hashedEventScript.hashMode, HashMode.script);
       });
-    });
-    group('Sha512', () {
-      test('Should hash the scripts in the sample html', () {
+
+      test('Sha512 Should hash the scripts in the sample html', () {
         final hashedScripts = hashScripts(
           htmlFile: loadSampleHTMLFile,
           hashType: sha512,
@@ -86,16 +95,62 @@ void main() {
         final hashedServiceWorkerScript = hashedScripts.first;
         expect(
           '$hashedServiceWorkerScript',
-          '''"'sha512-PT8zhJrdQWDWlmFD0JnXQNhhhcSaWv2QkYJQR0e0/bpMRXQjFdmrHUCt2VD/F3ODSSkAymTk7U+Ioke6Mz2O/A=='"''',
+          '''"'sha512-LUGTygeoB8sIUGBHqMmUEmPD+h/pXt1F44dpw+hpARI/sC5BRuoHqNoeIMVQ32yNlo8b5xgINyBoJ15D9RNdSA=='"''',
         );
-        expect(hashedServiceWorkerScript.lineNumber, 35);
+        expect(hashedServiceWorkerScript.lineNumber, 12);
+        expect(hashedServiceWorkerScript.hashMode, HashMode.script);
 
         final hashedEventScript = hashedScripts.last;
         expect(
           '$hashedEventScript',
-          '''"'sha512-8G4uS0MdZrs5ptGyDN5bhZbOqsESg6ZMyM1KOcBiorhrmFiCHOWqXShljGD7dO3E40EeyPlq3os5ureB5EBZRA=='"''',
+          '''"'sha512-Xj/eQr122+tYblVGOUrF8Fdb1ofzONeZj4Hc+YRIYVl8IIUm0TShtYzt01pTVlRpPb7Kks9oYXZBPDMYwPLejQ=='"''',
         );
-        expect(hashedEventScript.lineNumber, 43);
+        expect(hashedEventScript.lineNumber, 28);
+      });
+    });
+    group('HashMode.style', () {
+      test('Sha256 Should hash the scripts in the sample html', () {
+        final hashedScripts = hashScripts(
+          htmlFile: loadSampleHTMLFile,
+          hashMode: HashMode.style,
+        );
+        expect(hashedScripts.length, 1);
+        final hashedInlineStyle = hashedScripts.first;
+        expect(
+          '$hashedInlineStyle',
+          '''"'sha256-1Wuc9zmyidfW0pJ9AMhhvd05cM2OfnK5Ovf1QsjZkRE='"''',
+        );
+        expect(hashedInlineStyle.lineNumber, 21);
+      });
+
+      test('Sha384 Should hash the scripts in the sample html', () {
+        final hashedScripts = hashScripts(
+          htmlFile: loadSampleHTMLFile,
+          hashType: sha384,
+          hashMode: HashMode.style,
+        );
+        expect(hashedScripts.length, 1);
+        final hashedInlineStyle = hashedScripts.first;
+        expect(
+          '$hashedInlineStyle',
+          '''"'sha384-IOzEWlfc0Wf1jww0j8m4bU1PbSNluTRuwOeGdMdm7x7tKHKRc9upP2vYv5da7IrN'"''',
+        );
+        expect(hashedInlineStyle.lineNumber, 21);
+      });
+
+      test('Sha512 Should hash the scripts in the sample html', () {
+        final hashedScripts = hashScripts(
+          htmlFile: loadSampleHTMLFile,
+          hashType: sha512,
+          hashMode: HashMode.style,
+        );
+        expect(hashedScripts.length, 1);
+        final hashedInlineStyle = hashedScripts.first;
+        expect(
+          '$hashedInlineStyle',
+          '''"'sha512-7FUeKNR1H/JWQhnHbqq30GBu/6BCDkO0bVuF0kI1jR6Pm6YQHEF/1CSAeEARTCjHzMTRCy3/rJKedM3pIryKRQ=='"''',
+        );
+        expect(hashedInlineStyle.lineNumber, 21);
       });
     });
   });

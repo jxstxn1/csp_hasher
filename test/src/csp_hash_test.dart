@@ -9,6 +9,7 @@ void main() {
         lineNumber: 1,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       expect(hash.toString(), equals('''"'sha256-abc123'"'''));
     });
@@ -18,21 +19,25 @@ void main() {
         lineNumber: 1,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       final hash2 = CspHash(
         lineNumber: 1,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       final hash3 = CspHash(
         lineNumber: 2,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       final hash4 = CspHash(
         lineNumber: 1,
         hashType: sha256,
         hash: 'def456',
+        hashMode: HashMode.script,
       );
       expect(hash1, equals(hash2));
       expect(hash1, isNot(equals(hash3)));
@@ -44,21 +49,25 @@ void main() {
         lineNumber: 1,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       final hash2 = CspHash(
         lineNumber: 1,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       final hash3 = CspHash(
         lineNumber: 2,
         hashType: sha256,
         hash: 'abc123',
+        hashMode: HashMode.script,
       );
       final hash4 = CspHash(
         lineNumber: 1,
         hashType: sha256,
         hash: 'def456',
+        hashMode: HashMode.script,
       );
       expect(hash1.hashCode, equals(hash2.hashCode));
       expect(hash1.hashCode, isNot(equals(hash3.hashCode)));

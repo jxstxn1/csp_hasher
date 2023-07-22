@@ -6,11 +6,13 @@ class CspHash {
   final int lineNumber;
   final Hash hashType;
   final String hash;
+  final HashMode hashMode;
 
   CspHash({
     required this.lineNumber,
     required this.hashType,
     required this.hash,
+    required this.hashMode,
   });
 
   @override
@@ -25,8 +27,16 @@ class CspHash {
           runtimeType == other.runtimeType &&
           lineNumber == other.lineNumber &&
           hashType == other.hashType &&
+          hashMode == other.hashMode &&
           hash == other.hash;
 
   @override
-  int get hashCode => hash.hashCode ^ hashType.hashCode ^ lineNumber.hashCode;
+  int get hashCode =>
+      hash.hashCode ^
+      hashType.hashCode ^
+      lineNumber.hashCode ^
+      hashMode.hashCode;
 }
+
+/// HashMode is used to determine whether to hash script or style tags in the given HTMl
+enum HashMode { style, script }
