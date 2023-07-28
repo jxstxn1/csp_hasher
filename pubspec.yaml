@@ -1,6 +1,6 @@
 name: csp_hasher
 description: Dart CSP hash generator can hash your inline scripts and styles.
-version: 1.0.0
+version: 1.0.1
 homepage: https://jxstxn.dev
 repository: https://github.com/jxstxn1/csp_hasher
 issue_tracker: https://github.com/jxstxn1/csp_hasher/issues
@@ -12,7 +12,7 @@ topics:
   - html
 
 environment:
-  sdk: ^3.0.5
+  sdk: ^3.0.0
 
 dependencies:
   crypto: ^3.0.3
